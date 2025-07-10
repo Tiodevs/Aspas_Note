@@ -6,6 +6,6 @@ import phrasesRoutes from './phrases.routes';
 const router = express.Router();
 
 // Registrar as rotas individuais
-router.use('/frases', phrasesRoutes);
+router.use('/phrases', phrasesRoutes);
 
 export default router; 

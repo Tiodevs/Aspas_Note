@@ -3,6 +3,7 @@ import cors from 'cors';
 
 // Rotas
 import routes from './routes/routes';
+import { envs } from './config/env';
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use(express.json());
 
 // Middleware para CORS
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
+  origin: envs.server.host,
   credentials: true
 }));
 
@@ -22,8 +23,8 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     description: 'API para gerenciar frases de famosos',
     endpoints: {
-      quotes: '/api/quotes',
-      authors: '/api/profile'
+      phrases: '/api/phrases',
+      users: '/api/users'
     }
   });
 });

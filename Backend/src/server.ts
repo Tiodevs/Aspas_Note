@@ -1,6 +1,7 @@
 import app from './app';
+import { envs } from './config/env';
 
-const PORT = process.env.PORT || 4000;
+const PORT = envs.server.port;
 
 // Inicializar o servidor
 const server = app.listen(PORT, () => {
