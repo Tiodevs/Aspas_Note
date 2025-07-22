@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  ADMIN
+  FREE
+  PRO
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -16,7 +22,9 @@ model User {
   bio       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  updatedBy String?
   password  String
+  role      Role     @default(FREE)
   
   // Relacionamento com frases
   phrases   Phrase[]
@@ -39,6 +47,16 @@ model Phrase {
   @@map("phrases")
 }
 
+model PasswordReset {
+  id        String   @id @default(cuid())
+  email     String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  used      Boolean  @default(false)
+  
+  @@map("password_resets")
+}
 // Comando para gerar o modelo
 // npx prisma generate
-// npx prisma migrate dev --name init
+// npx prisma migrate dev --name auth

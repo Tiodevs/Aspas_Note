@@ -49,8 +49,6 @@ export class EmailService {
     }
   }
 
-
-
   async enviarEmailCredenciaisTemporarias(nome: string, email: string, senhaTemporaria: string): Promise<{ success: boolean; message: string }> {
     try {
       const template = `
@@ -100,6 +98,38 @@ export class EmailService {
     } catch (error) {
       console.error('Erro ao enviar email de credenciais:', error);
       return { success: false, message: 'Erro ao enviar email de credenciais' };
+    }
+  }
+
+   // Enviar email de recuperação de senha
+   async enviarEmailRecuperacaoSenha(nome: string, email: string, resetLink: string) {
+    try {
+      const data = {
+        from: `Aspas Note <${this.sender}>`,
+        to: email,
+        subject: 'Recuperação de Senha - Aspas Note',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h1 style="color: #333; text-align: center;">Recuperação de Senha</h1>
+            <p>Olá ${nome},</p>
+            <p>Recebemos uma solicitação para redefinir sua senha. Clique no link abaixo para criar uma nova senha:</p>
+            <p style="text-align: center;">
+              <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Redefinir Senha</a>
+            </p>
+            <p>Se você não solicitou esta alteração, ignore este email.</p>
+            <p>O link é válido por 1 hora.</p>
+            <p>Atenciosamente,<br>Equipe Aspas Note</p>
+          </div>
+        `
+      };
+
+      const info = await this.transporter.sendMail(data);
+      
+      return { success: true, message: 'Email de recuperação enviado com sucesso' };
+    } catch (error) {
+      console.error('Erro ao enviar email de recuperação:', error);
+      // Não falha o fluxo principal se o email falhar
+      return { success: false, message: 'Não foi possível enviar o email de recuperação' };
     }
   }
 } 

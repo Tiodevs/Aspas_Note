@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PhrasesService } from '../services/phrases/phrases.service';
-import { CreatePhraseDto } from '../types/frases.types';
+import { CreatePhraseDto } from '../types/phrases.types';
 
 // Instância do serviço de frases
 const phrasesService = new PhrasesService();

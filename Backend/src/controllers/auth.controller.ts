@@ -1,0 +1,117 @@
+import { Request, Response } from 'express';
+import { AuthService } from '../services/auth/auth.service';
+import { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput } from '../schemas/auth.schemas';
+
+const authService = new AuthService();
+
+export class AuthController {
+    // Login
+    async login(req: Request, res: Response) {
+        const { email, senha }: LoginInput = req.body;
+
+        try {
+            const resultado = await authService.login(email, senha);
+            res.json(resultado);
+        } catch (error: any) {
+            console.error('Erro ao autenticar usuário:', error);
+            
+            if (error.message === 'Email ou senha incorretos') {
+                res.status(401).json({
+                    error: 'Email ou senha incorretos',
+                    code: 'INVALID_CREDENTIALS'
+                });
+                return;
+            }
+
+            if (error.message === 'Erro ao gerar token') {
+                res.status(500).json({
+                    error: 'Erro ao gerar token',
+                    code: 'TOKEN_GENERATION_ERROR'
+                });
+                return;
+            }
+            
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
+
+    // Criar um novo usuário (registro)
+    async register(req: Request, res: Response) {
+        const { nome, email, senha, role }: RegisterInput = req.body;
+
+        try {
+            const usuario = await authService.createUser(nome, email, senha, role);
+            res.status(201).json({
+                message: 'Usuário criado com sucesso',
+                user: usuario
+            });
+        } catch (error: any) {
+            console.error('Erro ao criar usuário:', error);
+            
+            if (error.message === 'Este email já está em uso.') {
+                res.status(409).json({
+                    error: 'Este email já está em uso',
+                    code: 'EMAIL_ALREADY_EXISTS'
+                });
+                return;
+            }
+
+            if (error.message === 'Este nome de usuário já está em uso.') {
+                res.status(409).json({
+                    error: 'Este nome de usuário já está em uso',
+                    code: 'USERNAME_ALREADY_EXISTS'
+                });
+                return;
+            }
+
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
+
+    // Solicitar recuperação de senha
+    async forgotPassword(req: Request, res: Response) {
+        const { email }: ForgotPasswordInput = req.body;
+
+        try {
+            const resultado = await authService.forgotPassword(email);
+            res.json(resultado);
+        } catch (error: any) {
+            console.error('Erro ao solicitar recuperação de senha:', error);
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
+
+    // Redefinir senha com token
+    async resetPassword(req: Request, res: Response) {
+        const { token, novaSenha }: ResetPasswordInput = req.body;
+
+        try {
+            const resultado = await authService.resetPassword(token, novaSenha);
+            res.json(resultado);
+        } catch (error: any) {
+            console.error('Erro ao redefinir senha:', error);
+
+            if (error.message === 'Token inválido ou expirado') {
+                res.status(400).json({
+                    error: 'Token inválido ou expirado',
+                    code: 'INVALID_TOKEN'
+                });
+                return;
+            }
+
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
+} 

@@ -1,6 +1,6 @@
 
 import prisma from '../../prisma/client';
-import { Phrase } from '../../types/frases.types';
+import { Phrase } from '../../types/phrases.types';
 
 export class PhrasesService {
 
