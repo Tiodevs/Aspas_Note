@@ -1,9 +1,9 @@
-import express from 'express';
+import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from '../schemas/auth.schemas';
 
-const router = express.Router();
+const router = Router();
 const authController = new AuthController();
 
 // Rota para autenticação (login)

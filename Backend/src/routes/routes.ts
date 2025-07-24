@@ -1,10 +1,10 @@
-import express from 'express';
+import { Router } from 'express';
 
 // Rotas
 import phrasesRoutes from './phrases.routes';
 import authRoutes from './auth.routes';
 
-const router = express.Router();
+const router = Router();
 
 // Registrar as rotas individuais
 router.use('/phrases', phrasesRoutes);

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PhrasesService } from '../services/phrases/phrases.service';
-import { CreatePhraseDto } from '../types/phrases.types';
+import { CreatePhraseInput, UpdatePhraseInput } from '../schemas/phrases.schemas';
 
 // Instância do serviço de frases
 const phrasesService = new PhrasesService();
@@ -8,19 +8,16 @@ const phrasesService = new PhrasesService();
 export class PhrasesController {
     async createPhrase(req: Request, res: Response) {
         try {
-            const { phrase, author, tags, userId }: CreatePhraseDto = req.body;
-            
-            // Validação básica
-            if (!phrase || !author || !userId) {
-                return res.status(400).json({ 
-                    error: 'Campos obrigatórios: phrase, author, userId' 
-                });
-            }
+            const { phrase, author, tags, userId }: CreatePhraseInput = req.body;
 
-            const phraseCreated = await phrasesService.createPhrase(phrase, author, tags || [], userId);
+            const phraseCreated = await phrasesService.createPhrase(phrase, author, tags, userId);
             res.status(201).json(phraseCreated);
         } catch (error) {
-            res.status(500).json({ error: 'Erro ao criar frase' });
+            console.error('Erro ao criar frase:', error);
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 
@@ -29,7 +26,11 @@ export class PhrasesController {
             const phrases = await phrasesService.listPhrase();
             res.status(200).json(phrases);
         } catch (error) {
-            res.status(500).json({ error: 'Erro ao listar frases' });
+            console.error('Erro ao listar frases:', error);
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 
@@ -39,7 +40,11 @@ export class PhrasesController {
             const phrases = await phrasesService.listPhrasesByUser(userId);
             res.status(200).json(phrases);
         } catch (error) {
-            res.status(500).json({ error: 'Erro ao listar frases do usuário' });
+            console.error('Erro ao listar frases do usuário:', error);
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 
@@ -49,31 +54,45 @@ export class PhrasesController {
             const phrase = await phrasesService.getPhraseById(id);
             
             if (!phrase) {
-                return res.status(404).json({ error: 'Frase não encontrada' });
+                res.status(404).json({ 
+                    error: 'Frase não encontrada',
+                    code: 'PHRASE_NOT_FOUND' 
+                });
+                return;
             }
             
             res.status(200).json(phrase);
         } catch (error) {
-            res.status(500).json({ error: 'Erro ao buscar frase' });
+            console.error('Erro ao buscar frase:', error);
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 
     async updatePhrase(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const { phrase, author, tags } = req.body;
-            
-            // Validação básica
-            if (!phrase || !author) {
-                return res.status(400).json({ 
-                    error: 'Campos obrigatórios: phrase, author' 
-                });
-            }
+            const updateData: UpdatePhraseInput = req.body;
 
-            const updatedPhrase = await phrasesService.updatePhrase(id, phrase, author, tags || []);
+            const updatedPhrase = await phrasesService.updatePhrase(id, updateData);
             res.status(200).json(updatedPhrase);
-        } catch (error) {
-            res.status(500).json({ error: 'Erro ao atualizar frase' });
+        } catch (error: any) {
+            console.error('Erro ao atualizar frase:', error);
+            
+            if (error.code === 'P2025') { // Prisma error code for record not found
+                res.status(404).json({ 
+                    error: 'Frase não encontrada',
+                    code: 'PHRASE_NOT_FOUND' 
+                });
+                return;
+            }
+            
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 
@@ -82,8 +101,21 @@ export class PhrasesController {
             const { id } = req.params;
             await phrasesService.deletePhrase(id);
             res.status(204).send();
-        } catch (error) {
-            res.status(500).json({ error: 'Erro ao deletar frase' });
+        } catch (error: any) {
+            console.error('Erro ao deletar frase:', error);
+            
+            if (error.code === 'P2025') { // Prisma error code for record not found
+                res.status(404).json({ 
+                    error: 'Frase não encontrada',
+                    code: 'PHRASE_NOT_FOUND' 
+                });
+                return;
+            }
+            
+            res.status(500).json({ 
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR' 
+            });
         }
     }
 }

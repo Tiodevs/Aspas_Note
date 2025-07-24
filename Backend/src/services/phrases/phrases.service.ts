@@ -1,11 +1,11 @@
 
 import prisma from '../../prisma/client';
-import { Phrase } from '../../types/phrases.types';
+import { CreatePhraseInput, UpdatePhraseInput, PhraseResponse } from '../../schemas/phrases.schemas';
 
 export class PhrasesService {
 
 
-    async createPhrase(phrase: string, author: string, tags: string[], userId: string): Promise<Phrase> {
+    async createPhrase(phrase: string, author: string, tags: string[], userId: string): Promise<CreatePhraseInput> {
         const newPhrase = await prisma.phrase.create({
             data: {
                 phrase,
@@ -17,7 +17,7 @@ export class PhrasesService {
         return newPhrase;
     }
 
-    async listPhrase(): Promise<Phrase[]> {
+    async listPhrase(): Promise<PhraseResponse[]> {
         const phrases = await prisma.phrase.findMany({
             orderBy: {
                 createdAt: 'desc'
@@ -26,7 +26,7 @@ export class PhrasesService {
         return phrases;
     }
 
-    async listPhrasesByUser(userId: string): Promise<Phrase[]> {
+    async listPhrasesByUser(userId: string): Promise<PhraseResponse[]> {
         const phrases = await prisma.phrase.findMany({
             where: {
                 userId
@@ -38,21 +38,17 @@ export class PhrasesService {
         return phrases;
     }
 
-    async getPhraseById(id: string): Promise<Phrase | null> {
+    async getPhraseById(id: string): Promise<PhraseResponse | null> {
         const phrase = await prisma.phrase.findUnique({
             where: { id },
         });
         return phrase;
     }
 
-    async updatePhrase(id: string, phrase: string, author: string, tags: string[]): Promise<Phrase> {
+    async updatePhrase(id: string, updateData: UpdatePhraseInput): Promise<PhraseResponse> {
         const updatedPhrase = await prisma.phrase.update({
             where: { id },
-            data: {
-                phrase,
-                author,
-                tags
-            }
+            data: updateData
         });
         return updatedPhrase;
     }

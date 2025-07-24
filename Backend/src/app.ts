@@ -7,7 +7,6 @@ import { envs } from './config/env';
 
 const app = express();
 
-// Middleware para parsing de JSON
 app.use(express.json());
 
 // Middleware para CORS
