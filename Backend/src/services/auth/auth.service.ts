@@ -4,7 +4,7 @@ import prisma from '../../prisma/client';
 import { EmailService } from '../email/email.service';
 import { envs } from '../../config/env';
 import crypto from 'crypto';
-import { Role } from '../../types/user.types';
+import { Role } from '../../schemas/auth.schemas';
 
 // Interface para o payload do token JWT
 interface JwtPayload {

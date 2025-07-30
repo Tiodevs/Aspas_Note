@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router, Request, Response } from "express";
 
 // Rotas
-import phrasesRoutes from './phrases.routes';
-import authRoutes from './auth.routes';
+import phrasesRoutes from "./phrases.routes";
+import authRoutes from "./auth.routes";
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.use('/phrases', phrasesRoutes);
 router.use('/auth', authRoutes);
 
 // Rota de health check
-router.get('/health', (req, res) => {
+router.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'ok'
   });

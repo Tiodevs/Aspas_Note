@@ -1,5 +1,23 @@
 import { z } from 'zod';
-import { Role } from '../types/user.types';
+
+// Enum para roles de usuário
+export enum Role {
+    ADMIN = 'ADMIN',
+    FREE = 'FREE',
+    PRO = 'PRO',
+}
+
+// Schema para usuário completo
+export const userSchema = z.object({
+    id: z.string(),
+    email: z.string().email(),
+    name: z.string(),
+    username: z.string(),
+    avatar: z.string(),
+    bio: z.string(),
+    password: z.string(),
+    role: z.nativeEnum(Role)
+});
 
 // Schema para login
 export const loginSchema = z.object({
@@ -59,6 +77,7 @@ export const resetPasswordSchema = z.object({
 });
 
 // Tipos TypeScript derivados dos schemas
+export type User = z.infer<typeof userSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;

@@ -24,6 +24,14 @@ module.exports = {
   collectCoverageFrom: [
     '**/*.ts',
     '!**/*.d.ts',
-    '!**/node_modules/**'
+    '!**/node_modules/**',
+    '!**/routes/**',
+    '!**/server.ts',
+    '!**/app.ts',
+    '!**/schemas/**',
+    '!**/prisma/**',
+    '!**/config/**',
+    '!**/__tests__/**',
+    '!**/middlewares/**'
   ]
 }; 
