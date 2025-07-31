@@ -1,7 +1,7 @@
-import { PhrasesService } from '../services/phrases/phrases.service';
+import { PhrasesService } from '../../../services/phrases/phrases.service';
 
-// Mock do Prisma - simula o banco de dados
-jest.mock('../prisma/client', () => ({
+// Mock do Prisma
+jest.mock('../../../prisma/client', () => ({
   __esModule: true,
   default: {
     phrase: {
@@ -10,16 +10,14 @@ jest.mock('../prisma/client', () => ({
   },
 }));
 
-// Importar o prisma mockado
-import mockPrisma from '../prisma/client';
+import mockPrisma from '../../../prisma/client';
 const mockCreate = (mockPrisma as any).phrase.create;
 
-describe('PhrasesService', () => {
+describe('CreatePhraseService', () => {
   let phrasesService: PhrasesService;
 
   beforeEach(() => {
     phrasesService = new PhrasesService();
-    // Limpa o mock antes de cada teste
     jest.clearAllMocks();
   });
 
@@ -31,9 +29,7 @@ describe('PhrasesService', () => {
     expect(typeof phrasesService.createPhrase).toBe('function');
   });
 
-  // 🟢 TESTE DE SUCESSO
   test('deve criar uma frase com sucesso', async () => {
-    // Dados que vamos enviar para a função
     const dadosEntrada = {
       phrase: 'A vida é bela',
       author: 'Roberto Benigni',
@@ -41,7 +37,6 @@ describe('PhrasesService', () => {
       userId: 'user123'
     };
 
-    // O que o banco "retornaria" (mockado)
     const respostaMockada = {
       id: 'phrase456',
       phrase: 'A vida é bela',
@@ -52,10 +47,8 @@ describe('PhrasesService', () => {
       updatedAt: new Date('2024-01-15')
     };
 
-    // Configurar o que o mock deve retornar
     mockCreate.mockResolvedValue(respostaMockada);
 
-    // Executar a função que vamos testar
     const resultado = await phrasesService.createPhrase(
       dadosEntrada.phrase,
       dadosEntrada.author,
@@ -63,11 +56,7 @@ describe('PhrasesService', () => {
       dadosEntrada.userId
     );
 
-    // Verificações:
-    // 1. A função retornou o resultado esperado?
     expect(resultado).toEqual(respostaMockada);
-    
-    // 2. O Prisma foi chamado corretamente?
     expect(mockCreate).toHaveBeenCalledWith({
       data: {
         phrase: 'A vida é bela',
@@ -76,30 +65,24 @@ describe('PhrasesService', () => {
         userId: 'user123'
       }
     });
-    
-    // 3. O Prisma foi chamado apenas uma vez?
     expect(mockCreate).toHaveBeenCalledTimes(1);
   });
 
-  // 🔴 TESTES DE ERRO
   test('deve falhar quando o banco de dados retorna erro', async () => {
-    // Simular erro do banco
     const erroSimulado = new Error('Erro de conexão com banco');
     mockCreate.mockRejectedValue(erroSimulado);
 
-    // Tentar criar frase e esperar que dê erro
     await expect(
       phrasesService.createPhrase('frase', 'autor', ['tag'], 'user123')
     ).rejects.toThrow('Erro de conexão com banco');
   });
 
-  // 🟡 TESTES COM DADOS DIFERENTES
   test('deve criar frase sem tags (array vazio)', async () => {
     const respostaMockada = {
       id: 'phrase789',
       phrase: 'Frase sem tags',
       author: 'Autor Desconhecido',
-      tags: [], // Array vazio
+      tags: [],
       userId: 'user456',
       createdAt: new Date(),
       updatedAt: new Date()
@@ -110,7 +93,7 @@ describe('PhrasesService', () => {
     const resultado = await phrasesService.createPhrase(
       'Frase sem tags',
       'Autor Desconhecido',
-      [], // Tags vazias
+      [],
       'user456'
     );
 
@@ -151,7 +134,6 @@ describe('PhrasesService', () => {
     expect(resultado.tags).toContain('amor');
   });
 
-  // 🎯 TESTES DE EDGE CASES
   test('deve funcionar com caracteres especiais', async () => {
     const fraseComEmojis = 'A vida é 🌟 incrível! ✨';
     const autorComAcentos = 'José Antônio da Côrte';
@@ -180,7 +162,6 @@ describe('PhrasesService', () => {
     expect(resultado.author).toContain('Antônio');
     expect(resultado.tags[0]).toContain('🎉');
   });
-
 
   test('deve funcionar com strings muito pequenas', async () => {
     const respostaMockada = {

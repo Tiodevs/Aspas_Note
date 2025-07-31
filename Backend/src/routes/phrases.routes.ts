@@ -7,17 +7,17 @@ const router = Router();
 const phrasesController = new PhrasesController();
 
 // Rota para frases por usuário (deve vir antes da rota /:id)
-router.get('/user/:userId', validateParams(userParamsSchema), phrasesController.listPhrasesByUser.bind(phrasesController));
+router.get('/user/:userId', validateParams(userParamsSchema), phrasesController.listPhrasesByUser);
 
 // Rotas para frases    
-router.post('/', validate(createPhraseSchema), phrasesController.createPhrase.bind(phrasesController));
+router.post('/', validate(createPhraseSchema), phrasesController.createPhrase);
 
-router.get('/', phrasesController.listPhrase.bind(phrasesController));
+router.get('/', phrasesController.listPhrase);
 
-router.get('/:id', validateParams(phraseParamsSchema), phrasesController.getPhraseById.bind(phrasesController));
+router.get('/:id', validateParams(phraseParamsSchema), phrasesController.getPhraseById);
 
-router.put('/:id', validateParams(phraseParamsSchema), validate(updatePhraseSchema), phrasesController.updatePhrase.bind(phrasesController));
+router.put('/:id', validateParams(phraseParamsSchema), validate(updatePhraseSchema), phrasesController.updatePhrase);
 
-router.delete('/:id', validateParams(phraseParamsSchema), phrasesController.deletePhrase.bind(phrasesController));
+router.delete('/:id', validateParams(phraseParamsSchema), phrasesController.deletePhrase);
 
 export default router; 

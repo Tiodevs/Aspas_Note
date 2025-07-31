@@ -6,7 +6,7 @@ const authService = new AuthService();
 
 export class AuthController {
     // Login
-    async login(req: Request, res: Response) {
+    login = async (req: Request, res: Response) => {
         const { email, senha }: LoginInput = req.body;
 
         try {
@@ -39,7 +39,7 @@ export class AuthController {
     }
 
     // Criar um novo usuário (registro)
-    async register(req: Request, res: Response) {
+    register = async (req: Request, res: Response) => {
         const { nome, email, senha, role }: RegisterInput = req.body;
 
         try {
@@ -75,7 +75,7 @@ export class AuthController {
     }
 
     // Solicitar recuperação de senha
-    async forgotPassword(req: Request, res: Response) {
+    forgotPassword = async (req: Request, res: Response) => {
         const { email }: ForgotPasswordInput = req.body;
 
         try {
@@ -91,7 +91,7 @@ export class AuthController {
     }
 
     // Redefinir senha com token
-    async resetPassword(req: Request, res: Response) {
+    resetPassword = async (req: Request, res: Response) => {
         const { token, novaSenha }: ResetPasswordInput = req.body;
 
         try {

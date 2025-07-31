@@ -5,8 +5,9 @@ import { CreatePhraseInput, UpdatePhraseInput } from '../schemas/phrases.schemas
 // Instância do serviço de frases
 const phrasesService = new PhrasesService();
 
+
 export class PhrasesController {
-    async createPhrase(req: Request, res: Response) {
+    createPhrase = async (req: Request, res: Response) => {
         try {
             const { phrase, author, tags, userId }: CreatePhraseInput = req.body;
 
@@ -21,9 +22,16 @@ export class PhrasesController {
         }
     }
 
-    async listPhrase(req: Request, res: Response) {
+    listPhrase = async (req: Request, res: Response) => {
         try {
             const phrases = await phrasesService.listPhrase();
+            if (phrases.length === 0) {
+                res.status(404).json({ 
+                    error: 'Nenhuma frase encontrada',
+                    code: 'PHRASE_NOT_FOUND' 
+                });
+                return;
+            }
             res.status(200).json(phrases);
         } catch (error) {
             console.error('Erro ao listar frases:', error);
@@ -34,7 +42,7 @@ export class PhrasesController {
         }
     }
 
-    async listPhrasesByUser(req: Request, res: Response) {
+    listPhrasesByUser = async (req: Request, res: Response) => {
         try {
             const { userId } = req.params;
             const phrases = await phrasesService.listPhrasesByUser(userId);
@@ -48,7 +56,7 @@ export class PhrasesController {
         }
     }
 
-    async getPhraseById(req: Request, res: Response) {
+    getPhraseById = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
             const phrase = await phrasesService.getPhraseById(id);
@@ -71,7 +79,7 @@ export class PhrasesController {
         }
     }
 
-    async updatePhrase(req: Request, res: Response) {
+    updatePhrase = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
             const updateData: UpdatePhraseInput = req.body;
@@ -96,7 +104,7 @@ export class PhrasesController {
         }
     }
 
-    async deletePhrase(req: Request, res: Response) {
+    deletePhrase = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
             await phrasesService.deletePhrase(id);

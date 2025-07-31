@@ -32,6 +32,5 @@ module.exports = {
     '!**/prisma/**',
     '!**/config/**',
     '!**/__tests__/**',
-    '!**/middlewares/**'
   ]
 }; 
