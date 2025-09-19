@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth/auth.service';
-import { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput } from '../schemas/auth.schemas';
+import { LoginInput, RegisterInput, ForgotPasswordInput, ResetPasswordInput, OAuthSigninInput } from '../schemas/auth.schemas';
 
 const authService = new AuthService();
 
@@ -108,6 +108,31 @@ export class AuthController {
                 return;
             }
 
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
+
+    // OAuth signin (Google, etc.)
+    oauthSignin = async (req: Request, res: Response) => {
+        const { email, name, image, provider, providerId }: OAuthSigninInput = req.body;
+
+        try {
+            const resultado = await authService.oauthSignin(email, name, image, provider, providerId);
+            res.json(resultado);
+        } catch (error: any) {
+            console.error('Erro no OAuth signin:', error);
+            
+            if (error.message === 'Erro ao gerar token') {
+                res.status(500).json({
+                    error: 'Erro ao gerar token',
+                    code: 'TOKEN_GENERATION_ERROR'
+                });
+                return;
+            }
+            
             res.status(500).json({
                 error: 'Erro interno do servidor',
                 code: 'INTERNAL_ERROR'

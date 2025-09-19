@@ -227,4 +227,82 @@ export class AuthService {
             throw new Error('Erro ao redefinir senha');
         }
     }
+
+    // OAuth signin - criar ou encontrar usuário com provider OAuth
+    async oauthSignin(email: string, name: string, image: string | undefined, provider: string, providerId: string) {
+        try {
+            // Primeiro, verificar se já existe um usuário com esse email
+            let usuario = await prisma.user.findUnique({
+                where: { email }
+            });
+
+            // Se não existir, criar um novo usuário
+            if (!usuario) {
+                // Gerar um username único baseado no email
+                const baseUsername = email.split('@')[0];
+                let username = baseUsername;
+                let counter = 1;
+
+                // Verificar se o username já existe e gerar um único
+                while (await prisma.user.findUnique({ where: { username } })) {
+                    username = `${baseUsername}${counter}`;
+                    counter++;
+                }
+
+                usuario = await prisma.user.create({
+                    data: {
+                        email,
+                        name,
+                        username,
+                        avatar: image || '',
+                        bio: '',
+                        password: '', // OAuth users não precisam de senha
+                        role: Role.FREE
+                    }
+                });
+            } else {
+                // Se o usuário já existe, atualizar informações se necessário
+                usuario = await prisma.user.update({
+                    where: { id: usuario.id },
+                    data: {
+                        name, // Atualizar nome se mudou
+                        avatar: image || usuario.avatar // Atualizar avatar se fornecido
+                    }
+                });
+            }
+
+            // Criar o token JWT
+            const token = jwt.sign(
+                {
+                    userId: usuario.id,
+                    email: usuario.email,
+                    role: usuario.role
+                },
+                process.env.JWT_SECRET || 'seu_segredo_super_secreto',
+                { expiresIn: '10d' }
+            );
+
+            if (!token) {
+                throw new Error('Erro ao gerar token');
+            }
+
+            // Retornar token e informações do usuário
+            return {
+                token,
+                user: {
+                    id: usuario.id,
+                    nome: usuario.name,
+                    email: usuario.email,
+                    role: usuario.role,
+                    avatar: usuario.avatar
+                }
+            };
+        } catch (error) {
+            console.error('Erro no OAuth signin:', error);
+            if (error instanceof Error) {
+                throw error;
+            }
+            throw new Error('Erro no processo de OAuth signin');
+        }
+    }
 }

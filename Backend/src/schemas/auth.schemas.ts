@@ -76,9 +76,33 @@ export const resetPasswordSchema = z.object({
     .max(100, 'Nova senha deve ter no máximo 100 caracteres')
 });
 
+// Schema para OAuth signin
+export const oauthSigninSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email é obrigatório')
+    .email('Email inválido')
+    .toLowerCase(),
+  name: z
+    .string()
+    .min(1, 'Nome é obrigatório')
+    .trim(),
+  image: z
+    .string()
+    .url('URL da imagem inválida')
+    .optional(),
+  provider: z
+    .string()
+    .min(1, 'Provider é obrigatório'),
+  providerId: z
+    .string()
+    .min(1, 'Provider ID é obrigatório')
+});
+
 // Tipos TypeScript derivados dos schemas
 export type User = z.infer<typeof userSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
-export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>; 
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+export type OAuthSigninInput = z.infer<typeof oauthSigninSchema>; 

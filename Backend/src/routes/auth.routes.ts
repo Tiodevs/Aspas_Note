@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validate } from '../middlewares/validation.middleware';
-import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema } from '../schemas/auth.schemas';
+import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema, oauthSigninSchema } from '../schemas/auth.schemas';
 
 const router = Router();
 const authController = new AuthController();
@@ -17,5 +17,8 @@ router.post('/forgot-password', validate(forgotPasswordSchema), authController.f
 
 // Rota para redefinir senha
 router.post('/reset-password', validate(resetPasswordSchema), authController.resetPassword);
+
+// Rota para OAuth signin (Google, etc.) - pública
+router.post('/oauth-signin', validate(oauthSigninSchema), authController.oauthSignin);
 
 export default router; 
