@@ -92,6 +92,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (response.ok) {
             const data = await response.json()
             // Adicionar informações do backend ao user
+            user.id = data.user?.id // CUID correto do backend
             user.role = data.user?.role || 'FREE'
             user.accessToken = data.token
             user.provider = 'google'
@@ -110,6 +111,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, account }) {
       // Primeira vez que o usuário faz login
       if (user) {
+        token.userId = user.id || token.sub || '' // Usar o ID correto do backend ou fallback
         token.accessToken = user.accessToken
         token.role = user.role || 'FREE'
         token.provider = user.provider || account?.provider || 'credentials'
@@ -120,7 +122,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       // Enviar propriedades para o cliente
       if (token) {
-        session.user.id = token.sub!
+        session.user.id = token.userId as string || token.sub! // Usar o CUID correto
         session.user.role = token.role as string
         session.accessToken = token.accessToken as string
         session.provider = token.provider as string
@@ -161,6 +163,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
+    userId: string
     role: string
     accessToken: string
     provider: string

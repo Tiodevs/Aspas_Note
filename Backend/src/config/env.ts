@@ -9,6 +9,9 @@ export const envs = {
         port: process.env.PORT || 4000,
         host: process.env.FRONTEND_URL || "http://localhost:3000",
     },
+    auth: {
+        jwtSecret: process.env.JWT_SECRET || "your-secret-key-change-in-production"
+    },
     email: {
         user: process.env.EMAIL_USER || " ",
         password: process.env.EMAIL_PASS || " ",

@@ -22,7 +22,6 @@ export default auth((req: NextRequest & { auth: any }) => {
     return NextResponse.redirect(new URL('/login', nextUrl))
   }
 
-  // Se usuário está logado e tenta acessar rotas de auth (login/signup)
   if (isAuthRoute && isLoggedIn) {
     return NextResponse.redirect(new URL('/dashboard', nextUrl))
   }

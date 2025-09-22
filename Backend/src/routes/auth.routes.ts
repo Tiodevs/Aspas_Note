@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { AuthController } from '../controllers/auth.controller';
 import { validate } from '../middlewares/validation.middleware';
 import { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema, oauthSigninSchema } from '../schemas/auth.schemas';
+import { authenticateToken } from '../middlewares/auth.middleware';
 
 const router = Router();
 const authController = new AuthController();
@@ -20,5 +21,8 @@ router.post('/reset-password', validate(resetPasswordSchema), authController.res
 
 // Rota para OAuth signin (Google, etc.) - pública
 router.post('/oauth-signin', validate(oauthSigninSchema), authController.oauthSignin);
+
+// Rota para obter dados do usuário atual - protegida
+router.get('/me', authenticateToken, authController.me);
 
 export default router; 

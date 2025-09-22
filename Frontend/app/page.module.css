@@ -183,6 +183,13 @@
   }
 }
 
+/* Mobile - Espaço para menu inferior */
+@media (max-width: 768px) {
+  .main {
+    padding-bottom: 140px; /* Espaço para o menu inferior */
+  }
+}
+
 .feature {
   text-align: center;
   padding: 1.5rem;

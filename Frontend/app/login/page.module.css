@@ -1,6 +1,6 @@
 /* Login Page Styles - Split Screen Design */
 .container {
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   background: #f8f9fa;
 }
@@ -9,7 +9,7 @@
 .leftSide {
   flex: 1;
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .backgroundImage {
@@ -227,25 +227,36 @@
     flex: none;
     height: 200px;
   }
+
+  .backgroundImage {
+    display: none;
+  }
+
+  .leftSide {
+    display: none;
+  }
   
   .rightSide {
     flex: 1;
-    padding: 1rem;
+
   }
   
   .formContainer {
-    padding: 2rem 1.5rem;
+
+    padding: 2rem 1rem;
     box-shadow: none;
     border-radius: 0;
   }
 }
 
 @media (max-width: 480px) {
+
   .formContainer {
-    padding: 1.5rem 1rem;
+    width: 100%;
+    padding: 0px 30px;
   }
   
   .logoContainer {
-    margin-bottom: 2rem;
+    margin-bottom: 60px;
   }
 }

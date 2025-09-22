@@ -8,10 +8,12 @@ interface LogoProps {
   clickable?: boolean
   href?: string
   className?: string
+  variant?: 'primary' | 'secondary'
 }
 
 export const Logo: React.FC<LogoProps> = ({ 
   size = 'medium',
+  variant = 'primary',
   clickable = false,
   href = '/',
   className 
@@ -26,7 +28,7 @@ export const Logo: React.FC<LogoProps> = ({
 
   const logoImage = (
     <Image
-      src="/images/logos/Logo01.png"
+      src={variant === 'primary' ? '/images/logos/Logo01.png' : '/images/logos/Logo02.png'}
       alt="Aspas Logo"
       width={width}
       height={height}

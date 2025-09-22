@@ -305,4 +305,32 @@ export class AuthService {
             throw new Error('Erro no processo de OAuth signin');
         }
     }
+
+    // Obter dados do usuário por ID
+    async getUserById(userId: string) {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    createdAt: true
+                }
+            });
+
+            if (!user) {
+                throw new Error('Usuário não encontrado');
+            }
+
+            return user;
+        } catch (error) {
+            console.error('Erro ao buscar usuário por ID:', error);
+            if (error instanceof Error) {
+                throw error;
+            }
+            throw new Error('Erro ao buscar dados do usuário');
+        }
+    }
 }

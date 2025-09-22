@@ -130,6 +130,7 @@ export default function SignupPage() {
           </div>
 
           <form onSubmit={handleSubmit} className={styles.form}>
+
             {error && (
               <div className={styles.errorMessage}>
                 {error}

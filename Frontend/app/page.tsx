@@ -1,20 +1,13 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import Link from 'next/link'
+import { Navigation } from '@/components/ui'
 import styles from './page.module.css'
 
 export default function Home() {
   const { data: session, status } = useSession()
-  const router = useRouter()
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/dashboard')
-    }
-  }, [status, router])
 
   if (status === 'loading') {
     return (
@@ -26,33 +19,8 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.headerContent}>
-          <div className={styles.headerInner}>
-            <div className={styles.logo}>
-              <h1 className={styles.logoText}>
-                Aspas Note
-              </h1>
-            </div>
-            
-            <div className={styles.nav}>
-              <Link
-                href="/login"
-                className={styles.navLink}
-              >
-                Entrar
-              </Link>
-              <Link
-                href="/signup"
-                className={styles.navButton}
-              >
-                Cadastrar
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Navigation Component */}
+      <Navigation />
 
       {/* Hero Section */}
       <main className={styles.main}>
@@ -67,18 +35,41 @@ export default function Home() {
           </p>
 
           <div className={styles.heroActions}>
-            <Link
-              href="/signup"
-              className={styles.primaryButton}
-            >
-              Começar agora
-            </Link>
-            <Link
-              href="/login"
-              className={styles.secondaryButton}
-            >
-              Já tenho conta
-            </Link>
+            {/* Botões para usuários não autenticados */}
+            {!session && (
+              <>
+                <Link
+                  href="/signup"
+                  className={styles.primaryButton}
+                >
+                  Começar agora
+                </Link>
+                <Link
+                  href="/login"
+                  className={styles.secondaryButton}
+                >
+                  Já tenho conta
+                </Link>
+              </>
+            )}
+            
+            {/* Botões para usuários autenticados */}
+            {session && (
+              <>
+                <Link
+                  href="/dashboard"
+                  className={styles.primaryButton}
+                >
+                  Ir para Dashboard
+                </Link>
+                <Link
+                  href="/about"
+                  className={styles.secondaryButton}
+                >
+                  Saiba mais
+                </Link>
+              </>
+            )}
           </div>
         </div>
 

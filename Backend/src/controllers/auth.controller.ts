@@ -139,4 +139,41 @@ export class AuthController {
             });
         }
     }
+
+    // Obter dados do usuário atual (baseado no token JWT)
+    me = async (req: Request, res: Response) => {
+        try {
+            // O middleware de autenticação já decodificou o token e colocou os dados em req.user
+            const userId = (req as any).user?.userId;
+            
+            if (!userId) {
+                res.status(401).json({
+                    error: 'Token inválido ou expirado',
+                    code: 'INVALID_TOKEN'
+                });
+                return;
+            }
+
+            const user = await authService.getUserById(userId);
+
+            res.json({
+                user: user
+            });
+        } catch (error: any) {
+            console.error('Erro ao obter dados do usuário:', error);
+            
+            if (error.message === 'Usuário não encontrado') {
+                res.status(404).json({
+                    error: 'Usuário não encontrado',
+                    code: 'USER_NOT_FOUND'
+                });
+                return;
+            }
+            
+            res.status(500).json({
+                error: 'Erro interno do servidor',
+                code: 'INTERNAL_ERROR'
+            });
+        }
+    }
 } 

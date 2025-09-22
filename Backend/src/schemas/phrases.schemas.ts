@@ -68,15 +68,25 @@ export const userParamsSchema = z.object({
 export const listPhrasesQuerySchema = z.object({
   userId: z
     .string()
+    .regex(CUID_REGEX, 'ID do usuário deve ser um CUID válido')
     .optional(),
   tag: z
     .string()
+    .min(1, 'Tag não pode estar vazia')
+    .max(50, 'Tag deve ter no máximo 50 caracteres')
+    .trim()
     .optional(),
   author: z
     .string()
+    .min(1, 'Nome do autor não pode estar vazio')
+    .max(100, 'Nome do autor deve ter no máximo 100 caracteres')
+    .trim()
     .optional(),
   search: z
     .string()
+    .min(1, 'Termo de busca não pode estar vazio')
+    .max(200, 'Termo de busca deve ter no máximo 200 caracteres')
+    .trim()
     .optional(),
   page: z
     .string()
@@ -100,6 +110,16 @@ export type UpdatePhraseInput = z.infer<typeof updatePhraseSchema>;
 export type PhraseParams = z.infer<typeof phraseParamsSchema>;
 export type UserParams = z.infer<typeof userParamsSchema>;
 export type ListPhrasesQuery = z.infer<typeof listPhrasesQuerySchema>;
+
+// Interface para filtros de pesquisa de frases
+export interface PhraseFilters {
+  userId?: string;
+  author?: string;
+  search?: string;
+  tag?: string;
+  page?: number;
+  limit?: number;
+}
 
 // Tipo para a frase completa (como vem do banco)
 export interface PhraseResponse {

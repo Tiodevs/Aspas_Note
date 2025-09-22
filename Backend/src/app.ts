@@ -10,8 +10,12 @@ const app = express();
 app.use(express.json());
 
 // Middleware para CORS
+// app.use(cors({
+//   origin: envs.server.host,
+//   credentials: true
+// }));
 app.use(cors({
-  origin: envs.server.host,
+  origin: true,
   credentials: true
 }));
 
