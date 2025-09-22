@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
 import styles from './page.module.css'
@@ -407,9 +407,9 @@ export default function DashboardPage() {
 
       closeCreateModal()
       showMessage('success', 'Frase criada com sucesso!')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Erro ao criar frase:', error)
-      const errorMessage = error.message || 'Erro ao criar frase. Tente novamente.'
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao criar frase. Tente novamente.'
       showMessage('error', errorMessage)
     } finally {
       setLoading(false)
@@ -489,7 +489,7 @@ export default function DashboardPage() {
                   onClick={() => openModal(phrase)}
                 >
                   <div className={styles.phraseContent}>
-                    <p className={styles.phraseText}>"{phrase.phrase}"</p>
+                    <p className={styles.phraseText}>&ldquo;{phrase.phrase}&rdquo;</p>
                     <p className={styles.phraseAuthor}>— <span className={styles.phraseAuthorName}>{phrase.author}</span></p>
                   </div>
                 </div>
@@ -576,7 +576,7 @@ export default function DashboardPage() {
                 <div className={styles.phraseDetails}>
                   <div className={styles.detailItem}>
                     <strong>Frase:</strong>
-                    <p className={styles.detailPhrase}>"{selectedPhrase.phrase}"</p>
+                    <p className={styles.detailPhrase}>&ldquo;{selectedPhrase.phrase}&rdquo;</p>
                   </div>
                   
                   <div className={styles.detailItem}>

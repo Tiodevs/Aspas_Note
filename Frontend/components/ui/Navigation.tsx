@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Logo } from './Logo'
@@ -16,7 +16,6 @@ interface NavigationProps {
 export default function Navigation({ onAddClick }: NavigationProps) {
   const { data: session, status } = useSession()
   const pathname = usePathname()
-  const router = useRouter()
   
   // Se ainda está carregando, não renderizar nada
   if (status === 'loading') {

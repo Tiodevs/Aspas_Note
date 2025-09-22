@@ -34,7 +34,7 @@ export default function LoginPage() {
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error) {
+    } catch {
       setError('Erro interno do servidor')
     } finally {
       setIsLoading(false)
@@ -49,7 +49,7 @@ export default function LoginPage() {
       await signIn('google', {
         callbackUrl: '/dashboard',
       })
-    } catch (error) {
+    } catch {
       setError('Erro ao fazer login com Google')
       setIsLoading(false)
     }

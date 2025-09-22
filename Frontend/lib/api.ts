@@ -16,7 +16,7 @@ class ApiClient {
     }
   }
 
-  async get(endpoint: string, params?: Record<string, any>) {
+  async get(endpoint: string, params?: Record<string, unknown>) {
     const headers = await this.getAuthHeaders()
     
     let url = `${API_BASE_URL}${endpoint}`
@@ -46,7 +46,7 @@ class ApiClient {
     return response.json()
   }
 
-  async post(endpoint: string, data: any) {
+  async post(endpoint: string, data: unknown) {
     const headers = await this.getAuthHeaders()
     
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -66,7 +66,7 @@ class ApiClient {
         }
         
         if (errorData.details && Array.isArray(errorData.details)) {
-          const validationErrors = errorData.details.map((detail: any) => 
+          const validationErrors = errorData.details.map((detail: { field: string; message: string }) => 
             `${detail.field}: ${detail.message}`
           ).join(', ')
           errorMessage += ` - ${validationErrors}`
@@ -151,6 +151,7 @@ export interface PhraseFilters {
   tag?: string
   page?: number
   limit?: number
+  [key: string]: string | number | undefined
 }
 
 // Funções específicas para frases

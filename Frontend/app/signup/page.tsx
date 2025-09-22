@@ -62,8 +62,8 @@ export default function SignupPage() {
         router.push('/login')
       }, 2000)
 
-    } catch (error: any) {
-      setError(error.message || 'Erro interno do servidor')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Erro interno do servidor')
     } finally {
       setIsLoading(false)
     }
@@ -77,7 +77,7 @@ export default function SignupPage() {
       await signIn('google', {
         callbackUrl: '/dashboard',
       })
-    } catch (error) {
+    } catch {
       setError('Erro ao criar conta com Google')
       setIsLoading(false)
     }
